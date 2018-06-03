@@ -9,6 +9,7 @@
 namespace App\Controller;
 
 
+use App\Models\Raport;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -18,26 +19,15 @@ class BaseController extends AbstractController
     /**
      * @Route("/")
      */
-    public function homepage()
+    public function show()
     {
-        return new Response('First thing');
-    }
+        $rapports[Raport::Count()] = new Raport('2015/05/25','21:15','I ate a normal rock once. It did NOT taste like bacon!');
+        $rapports[Raport::Count()] = new Raport('2015/05/26','04:14','Woohoo! I\'m going on an all - asteroid diet!');
+        $rapports[Raport::Count()] = new Raport('2015/05/27','21:37','I like bacon too! Buy some from my site! bakinsomebacon.com');
+        $rapports[Raport::Count()] = new Raport('1111/11/11','00:00','I Like Trains');
 
-    /**
-     * @Route("/{slug}")
-     */
-    public function show($slug)
-    {
-
-        $comments = [
-            'I ate a normal rock once. It did NOT taste like bacon!',
-            'Woohoo! I\'m going on an all-asteroid diet!',
-            'I like bacon too! Buy some from my site! bakinsomebacon.com',
-        ];
-
-        return $this->render('Commits/show.html.twig', [
-            'title'=> ucwords(str_replace('-','',$slug)),
-            'comments' => $comments,
+        return $this->render('RapportViews/show.html.twig', [
+            'rapports' => $rapports,
             ]);
     }
 }
