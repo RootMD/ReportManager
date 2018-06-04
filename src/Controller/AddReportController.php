@@ -22,15 +22,26 @@ class AddReportController extends AbstractController
 {
     /**
      * @Route("/add",name="addReport")
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function new(Request $request){
         $report = new Report(new \DateTime('now'),new \DateTime('now'),null);
 
         $form = $this->createFormBuilder($report)
-            ->add('date', DateType::class)
-            ->add('time', TimeType::class)
-            ->add('content', TextType::class)
-            ->add('save', SubmitType::class, array('label' => 'Create Report'))
+            ->add('date', DateType::class, array(
+                'attr' => array('class' => 'form-group'
+                )))
+            ->add('time', TimeType::class, array(
+                'attr' => array('class' => 'form-group'
+                )))
+            ->add('content', TextType::class, array(
+                'attr' => array('class' => 'form-control'
+                )))
+            ->add('save', SubmitType::class, array(
+                'label' => 'Create Report',
+                'attr' => array('class' => 'btn mt-3'
+                )))
             ->getForm();
 
         return $this->render('ReportViews/add.html.twig', array(
