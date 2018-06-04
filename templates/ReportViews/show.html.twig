@@ -54,7 +54,7 @@
 {% block body %}
     <ul>
     <li><a class="active" href="#home">Home</a></li>
-    <li class="bar-right"><a href="#news">Add</a></li>
+    <li class="bar-right"><a href={{ path('addReport') }}>Add</a></li>
     </ul>
     <table>
         <tr>
@@ -62,11 +62,11 @@
             <th>Time</th>
             <th>Rapport</th>
         </tr>
-        {% for rapport in rapports %}
+        {% for report in reports %}
             <tr>
-                <td>{{ rapport.date }}</td>
-                <td>{{ rapport.time }}</td>
-                <td>{{ rapport.content }}</td>
+                <td>{{ report.date }}</td>
+                <td>{{ report.time }}</td>
+                <td>{{ report.content }}</td>
             </tr>
         {% endfor %}
     </table>

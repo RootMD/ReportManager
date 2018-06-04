@@ -9,12 +9,12 @@
 namespace App\Models;
 
 
-class Raport
+class Report
 {
     public static $id = 0;
-    public $date;
-    public $time;
-    public $content;
+    protected $date;
+    protected $time;
+    protected $content;
 
     public function __construct($date, $time, $content)
     {
@@ -23,6 +23,7 @@ class Raport
         $this->content=$content;
         self::$id++;
     }
+
     public static function Count(){
         return self::$id;
     }
@@ -49,6 +50,30 @@ class Raport
     public function getContent()
     {
         return $this->content;
+    }
+
+    /**
+     * @param mixed $date
+     */
+    public function setDate(\DateTime $date = null)
+    {
+        $this->date = $date;
+    }
+
+    /**
+     * @param mixed $time
+     */
+    public function setTime(\DateTime $time = null)
+    {
+        $this->time = $time;
+    }
+
+    /**
+     * @param mixed $content
+     */
+    public function setContent($content)
+    {
+        $this->content = $content;
     }
 
 }
