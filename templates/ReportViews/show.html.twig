@@ -11,14 +11,16 @@
         <tr>
             <th>Date</th>
             <th>Time</th>
-            <th>Report</th>
+            <th>Github Issue</th>
+            <th>Word done</th>
         </tr>
         </thead>
         <tbody>
         {% for report in reports %}
             <tr>
-                <td>{{ report.date }}</td>
-                <td>{{ report.time }}</td>
+                <td>{{ report.date|date("Y-m-d") }}</td>
+                <td>{{ report.time|date("H:i:s") }}</td>
+                <td>{{ report.githubIssue }}</td>
                 <td>{{ report.content }}</td>
             </tr>
         {% endfor %}

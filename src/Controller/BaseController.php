@@ -9,10 +9,16 @@
 namespace App\Controller;
 
 
-use App\Models\Report;
+use App\Entity\Report;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\TimeType;
+use Symfony\Component\HttpFoundation\Request;
 
 class BaseController extends AbstractController
 {
@@ -21,13 +27,56 @@ class BaseController extends AbstractController
      */
     public function show()
     {
-        $reports[Report::Count()] = new Report('2015/05/25','21:15','First Dude');
-        $reports[Report::Count()] = new Report('2015/05/26','04:14','Second Here, Mate');
-        $reports[Report::Count()] = new Report('2015/05/27','21:37','Im not ur Mate, Pal');
-        $reports[Report::Count()] = new Report('1111/11/11','00:00','I Like Trains');
+        $repository = $this->getDoctrine()->getRepository(Report::class);
+        $reports = $repository->findAll();
+
+
 
         return $this->render('ReportViews/show.html.twig', [
-            'reports' => $reports,
+                'reports' => $reports
             ]);
+    }
+
+    /**
+     * @Route("/add",name="addReport")
+     * @param Request $request
+     * @param EntityManagerInterface $em
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function Add(Request $request, EntityManagerInterface $em){
+        $report = new Report();
+        $form = $this->createFormBuilder($report)
+            ->add('date', DateType::class, array(
+                'attr' => array('class' => 'form-group'
+                )))
+            ->add('time', TimeType::class, array(
+                'attr' => array('class' => 'form-group'
+                )))
+            ->add('github_issue', TextType::class, array(
+                'attr' => array('class' => 'form-control'
+                )))
+            ->add('content', TextType::class, array(
+                'attr' => array('class' => 'form-control'
+                )))
+            ->add('save', SubmitType::class, array(
+                'label' => 'Create Report',
+                'attr' => array('class' => 'btn mt-3'
+                )))
+            ->getForm();
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $report = $form->getData();
+             $em->persist($report);
+             $em->flush();
+
+            return $this->redirectToRoute('ReportList');
+        }
+
+
+        return $this->render('ReportViews/add.html.twig', array(
+            'form' => $form->createView(),
+        ));
     }
 }
