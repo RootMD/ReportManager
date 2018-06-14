@@ -79,4 +79,76 @@ class BaseController extends AbstractController
             'form' => $form->createView(),
         ));
     }
+
+    /**
+     * @Route("/remove/{id}", name="removeReport")
+     * @param Request $request
+     * @param $id
+     * @param EntityManagerInterface $em
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     */
+    public function Remove(Request $request, $id, EntityManagerInterface $em){
+        $repository = $this->getDoctrine()->getRepository(Report::class);
+        $reportToRemove = $repository->findOneBy(['id' => $id]);
+            if (!$reportToRemove) {
+                throw $this->createNotFoundException(
+                    'No product found for id '.$id
+                );
+            }
+            $em->remove($reportToRemove);
+            $em->flush();
+            return $this->redirectToRoute('ReportList');
+    }
+
+    /**
+     * @Route("/edit/{id}", name="editReport")
+     * @param Request $request
+     * @param $id
+     * @param EntityManagerInterface $em
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
+     */
+    public function Edit(Request $request, $id, EntityManagerInterface $em){
+        $repository = $this->getDoctrine()->getRepository(Report::class);
+
+
+
+            $reportToEdit = $repository->findOneBy(['id' => $id]);
+            if (!$reportToEdit) {
+                throw $this->createNotFoundException(
+                    'No product found for id '.$id
+                );
+            }
+            $form = $this->createFormBuilder($reportToEdit)
+                ->add('date', DateType::class, array(
+                    'attr' => array('class' => 'form-group'
+                    )))
+                ->add('time', TimeType::class, array(
+                    'attr' => array('class' => 'form-group'
+                    )))
+                ->add('github_issue', TextType::class, array(
+                    'attr' => array('class' => 'form-control'
+                    )))
+                ->add('content', TextType::class, array(
+                    'attr' => array('class' => 'form-control'
+                    )))
+                ->add('save', SubmitType::class, array(
+                    'label' => 'Update Report',
+                    'attr' => array('class' => 'btn mt-3'
+                    )))
+                ->getForm();
+
+            $form->handleRequest($request);
+
+            if ($form->isSubmitted() && $form->isValid()) {
+                $reportToEdit = $form->getData();
+                $em->flush();
+
+                return $this->redirectToRoute('ReportList');
+            }
+
+            return $this->render('ReportViews/add.html.twig', array(
+                'form' => $form->createView(),
+            ));
+
+    }
 }
