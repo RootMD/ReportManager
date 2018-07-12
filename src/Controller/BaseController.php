@@ -38,6 +38,14 @@ class BaseController extends AbstractController
     }
 
     /**
+     * @Route("panel", name="ReportPanel")
+     */
+    public function reportPanel()
+    {
+        return $this->render('ReportViews/panel.html.twig');
+    }
+
+    /**
      * @Route("/add",name="addReport")
      * @param Request $request
      * @param EntityManagerInterface $em
